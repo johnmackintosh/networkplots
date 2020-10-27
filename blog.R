@@ -1,11 +1,4 @@
-
-2020-10-25-network-plots.md
-================
-
 ## Contact tracing example
-
-
-
 library(data.table)
 library(dplyr)
 library(tibble)
