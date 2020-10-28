@@ -2,11 +2,11 @@ library(data.table)
 library(visNetwork)
 
 cases <- data.table::fread("MOCK_DATA.csv") 
-cases[complete.cases(id1,id2),]
+na.omit(cases, cols = 1:2)
 
-sources <- setnames(cases[,unique(.SD), .SDcols = "id1"],"id1", "label")
+sources <- setnames(cases[,unique(.SD), .SDcols = "id1"], old = "id1", new = "label")
 
-contacts <- setnames(cases[,unique(.SD), .SDcols = "id2"],"id2", "label")
+contacts <- setnames(cases[,unique(.SD), .SDcols = "id2"],old = "id2", new = "label")
 
 nodes <- merge(contacts, sources, by = "label", all = TRUE) ## full outer join
 nodes[,id := rleid(label)]
@@ -16,11 +16,7 @@ per_case <- cases[, weight := .N,by = c("id1","id2")]
 edges <- setnames(nodes[per_case, on = c("label" = "id1")],"id","from")
 
 edges <- setnames(nodes[edges, on = c("label" = "id2")], "id","to")[]
-
-
-edges <- edges[,.SD, .SDcols = c("from", "to","weight")]
-
-
+edges[,!c("label","i.label")][,.(from,to,weight)][]
 
 # contacts who are also sources
 
